@@ -29,14 +29,16 @@ destring nap , gen (days) force
 
 * variables
 gen ratio=ertek0 / hatarertek0
-gen effect=ratio>=1
+gen effective=ratio>=1
 tab type
-	table type, c(mean ratio)
-	table type, c(median ratio)
-	tab days
-	lpoly ratio days, noscat
+table type, c(mean ratio)
+table type, c(median ratio)
+hist days
+lpoly effective days, noscat
 egen days2=cut(days), at(0,20,40,60,500) /*bc non linear pattern*/
 
-* unconditional and conditional models, Pfizer/Moderna is base type 
-reg effect ib(2).type 
-reg effect ib(2).type kor female i.days2##i.dose
+
+* unconditional LPM model, Pfizer/Moderna is base type 
+reg effective ib(2).type 
+* Conditional LPM model, Pfizer/Moderna is base type 
+reg effective ib(2).type kor female i.days2##i.dose
